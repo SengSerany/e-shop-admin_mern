@@ -8,13 +8,16 @@ import {
   logout,
   resetAuthState,
 } from '../features/auth/authSlice';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 function Header() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { user, isUnlogged } = useSelector((state) => state.auth);
+  const location = useLocation();
+  const { user, isUnlogged, isError, isSuccess, message } = useSelector(
+    (state) => state.auth
+  );
 
   const handleLogout = () => {
     dispatch(logout());
@@ -28,8 +31,44 @@ function Header() {
       toast.success('Your are logout !');
     }
 
+    if (isError) {
+      toast.error(message);
+    }
+
+    if (isSuccess && location.pathname === '/login') {
+      navigate('/');
+      toast.success('Welcome ! You are now logged !');
+    }
+
+    if (user.id !== null && location.pathname === '/login') {
+      navigate('/');
+    }
+
+    if (isSuccess && location.pathname === '/register') {
+      navigate('/login');
+      toast.success('Welcome ! You are subscribe ! You can now login !');
+    }
+
+    if (user.id !== null && location.pathname === '/register') {
+      navigate('/');
+    }
+
+    if (user.id === null && location.pathname === '/store' && !isUnlogged) {
+      navigate('/login');
+      toast.error('You must be logged');
+    }
+
     dispatch(resetAuthState());
-  }, [dispatch, isUnlogged, navigate]);
+  }, [
+    dispatch,
+    isError,
+    isSuccess,
+    isUnlogged,
+    location.pathname,
+    message,
+    navigate,
+    user.id,
+  ]);
 
   return (
     <header>
@@ -39,14 +78,20 @@ function Header() {
           <Nav className="mx-auto">
             <Row>
               <Col>
-                <Nav.Link eventkey="link-1">Store</Nav.Link>
+                <Link
+                  className="nav-link text-center"
+                  to="/store"
+                  eventkey="link-1"
+                >
+                  Store
+                </Link>
               </Col>
               <Col>
                 <Nav.Link eventkey="link-2">Exhibitions</Nav.Link>
               </Col>
               <Col>
-                <Link className="nav-link" to="/">
-                  GALLERY
+                <Link className="nav-link text-center" to="/" eventkey="link-0">
+                  GALLERY ADMIN
                 </Link>
               </Col>
               <Col>

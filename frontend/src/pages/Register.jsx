@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Form, Button, Row, Col, Spinner } from 'react-bootstrap';
-import { register, resetAuthState } from '../features/auth/authSlice';
+import { register } from '../features/auth/authSlice';
 
 function Register() {
   const [registerData, setRegisterData] = useState({
@@ -14,12 +13,9 @@ function Register() {
   });
   const { username, email, password, passwordConfirm } = registerData;
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isLoading, isError, isSuccess, message } = useSelector(
-    (state) => state.auth
-  );
+  const { isLoading } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -30,19 +26,6 @@ function Register() {
       };
     });
   };
-
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
-
-    if (isSuccess) {
-      navigate('/login');
-      toast.success('Welcome ! You are subscribe ! You can now login !');
-    }
-
-    dispatch(resetAuthState());
-  }, [dispatch, isError, isSuccess, message, navigate]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

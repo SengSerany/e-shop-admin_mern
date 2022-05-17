@@ -1,9 +1,7 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { login, resetAuthState } from '../features/auth/authSlice';
+import { login } from '../features/auth/authSlice';
 import { Form, Button, Row, Col, Spinner } from 'react-bootstrap';
-import { toast } from 'react-toastify';
 
 function Login() {
   const [loginData, setLoginData] = useState({
@@ -13,12 +11,9 @@ function Login() {
 
   const { email, password } = loginData;
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { isError, isSuccess, isLoading, message, user } = useSelector(
-    (state) => state.auth
-  );
+  const { isLoading } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,23 +24,6 @@ function Login() {
       };
     });
   };
-
-  useEffect(() => {
-    if (isError) {
-      toast.error(message);
-    }
-
-    if (isSuccess) {
-      navigate('/');
-      toast.success('Welcome ! You are now logged !');
-    }
-
-    if (user.id !== null) {
-      navigate('/');
-    }
-
-    dispatch(resetAuthState());
-  }, [dispatch, isError, isSuccess, message, navigate, user]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

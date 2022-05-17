@@ -17,6 +17,10 @@ const UserAdminSchema = new mongoose.Schema(
       },
       required: [true, 'You must add an email'],
     },
+    isApproved: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
