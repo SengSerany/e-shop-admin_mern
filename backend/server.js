@@ -6,12 +6,12 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const cors = require('cors');
 
-const User = require('./models/userModel');
+const UserAdmin = require('./models/userAdminModel');
 
 const connectDB = require('./config/db');
 const { errorHandler } = require('./middleware/errorMiddleware');
 
-const userRouter = require('./routes/userRoutes');
+const userAdminRouter = require('./routes/userAdminRoutes');
 const productRouter = require('./routes/productRoutes.js');
 const homepageRouter = require('./routes/homepageRoutes');
 
@@ -41,12 +41,12 @@ app.use(passport.session());
 // Routes
 app.use('/api/v1/', homepageRouter);
 app.use('/api/v1/products', productRouter);
-app.use('/api/v1/users', userRouter);
+app.use('/api/v1/admins', userAdminRouter);
 
 // Session
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use(UserAdmin.createStrategy());
+passport.serializeUser(UserAdmin.serializeUser());
+passport.deserializeUser(UserAdmin.deserializeUser());
 
 // Error handling
 app.use(errorHandler);
