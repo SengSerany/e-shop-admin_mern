@@ -1,13 +1,11 @@
 const asyncHandler = require('express-async-handler');
 const Product = require('../models/productModel');
+const { cloudinary } = require('../config/cloudinary');
 
 // GET - Index products
 const indexProducts = asyncHandler(async (req, res) => {
   const products = await Product.find();
-  res.status(200).json({
-    endpoint: 'Index product',
-    products: products,
-  });
+  res.status(200).json(products);
 });
 
 // GET - Show product
@@ -41,20 +39,36 @@ const createProduct = asyncHandler(async (req, res) => {
     throw new Error('All field must be completed');
   }
 
-  const product = await Product.create({
-    image,
-    title,
-    author,
-    medium,
-    format,
-    description,
-    price,
+  const uploadResponse = await cloudinary.uploader.upload(image, {
+    upload_preset: 'art_gallery_api_pieces',
   });
 
-  res.status(200).json({
-    endpoint: 'Create product',
-    product: product,
-  });
+  try {
+    const product = await Product.create({
+      image: uploadResponse.url,
+      title,
+      author,
+      medium,
+      format,
+      description,
+      price,
+    });
+
+    res.status(200).json(product);
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      let errValidation = [];
+
+      Object.keys(error.errors).forEach((key) => {
+        errValidation.push(error.errors[key].message);
+      });
+
+      res.status(400);
+      throw new Error(errValidation);
+    }
+    res.status(400);
+    throw new Error('Something went wrong');
+  }
 });
 
 // PATCH - Update product

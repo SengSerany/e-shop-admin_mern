@@ -97,6 +97,7 @@ export const authSlice = createSlice({
       .addCase(register.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.message = 'You have been registered, you can now log in';
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
@@ -114,6 +115,7 @@ export const authSlice = createSlice({
           username: action.payload.user.username,
           email: action.payload.user.email,
         };
+        state.message = `You are connected ${action.payload.user.username}`;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
@@ -131,6 +133,7 @@ export const authSlice = createSlice({
       .addCase(logout.fulfilled, (state) => {
         state.user = { id: null, username: null, email: null };
         state.isUnlogged = true;
+        state.message = 'You are log out !';
       });
   },
 });

@@ -44,7 +44,7 @@ function Login() {
     <div className="user-form-login text-center">
       <Row>
         <Col lg={4}>
-          <h1 className="h1-form-login">Login</h1>
+          <h1 className="h1">Login</h1>
           <p className="lead form-login">
             Connect yourself and get some fabulous pieces of art !
           </p>

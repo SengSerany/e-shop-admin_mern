@@ -1,0 +1,135 @@
+// Overwrite
+$card-spacer-x: 0;
+$card-spacer-y: 0;
+$card-inner-border-radius: 10px;
+
+body {
+  font-family: 'Nunito', sans-serif;
+  background-color: black;
+}
+
+.body-color {
+  background-color: #ffffff;
+  padding-bottom: 2rem;
+}
+
+.nav-item a {
+  color: #000000;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #808080;
+}
+
+header {
+  font-family: 'Koulen', cursive;
+  letter-spacing: 0.02rem;
+}
+
+.nav-link {
+  font-size: 1rem;
+  letter-spacing: 0.08rem;
+  margin: auto;
+}
+
+.h1 {
+  font-size: 8rem !important;
+  font-family: 'Koulen', cursive;
+  margin: 0.5rem 0 0 0;
+}
+
+.lead.form-login {
+  margin: auto;
+}
+
+.form-label {
+  font-family: 'Koulen', cursive;
+  font-size: 1rem;
+  letter-spacing: 0.1rem;
+}
+
+.form-register {
+  margin-top: 7rem;
+}
+
+.nav .nav-item {
+  margin-right: 0.7rem;
+  margin-left: 0.7rem;
+}
+
+.image-selected {
+  height: 19rem;
+}
+
+.card {
+  border: none !important;
+  margin: 0.5rem !important;
+}
+
+.card h5 {
+  font-family: 'Koulen', cursive;
+  font-size: 1.75rem;
+  letter-spacing: 0.02rem;
+}
+
+.card p {
+  font-size: 0.75rem;
+}
+
+.card-img-top {
+  border-radius: 10px;
+}
+
+.index-product-image {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18rem;
+  height: 12rem;
+  overflow: hidden;
+  box-shadow: 0 70px 63px -60px #0000003b;
+  border-radius: 10px;
+}
+
+.product-card-body {
+  background-color: rgba($color: #072896, $alpha: 0.5);
+  height: 100%;
+  width: 100%;
+  padding: 1rem;
+  position: absolute;
+  color: #ffffff;
+  border-radius: 10px;
+}
+
+.hide-item {
+  display: none;
+}
+
+.user-form-login {
+  max-width: 55rem;
+  margin: 5rem auto;
+}
+
+.user-form-register {
+  max-width: 55rem;
+  margin: 2rem auto;
+}
+
+.btn-logout {
+  border: none;
+  background-color: #ffffff;
+}
+
+@media (max-width: 992px) {
+  .form-register {
+    margin-top: 0;
+  }
+  .user-form-login {
+    margin: 2rem auto;
+  }
+}
+
+// import bootstrap at the bottom
+@import '~bootstrap/scss/bootstrap';
