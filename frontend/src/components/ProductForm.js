@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button, Row, Col, Collapse, Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct } from '../features/product/productSlice';
@@ -10,7 +10,7 @@ function ProductForm() {
   const [length, setLength] = useState('');
   const [width, setWidth] = useState('');
   const [height, setHeigth] = useState('');
-  const [selectedImage, setSelectedImage] = useState();
+  const [selectedImage, setSelectedImage] = useState('');
   const [newProductData, setNewProductData] = useState({
     image: '',
     title: '',
@@ -23,7 +23,9 @@ function ProductForm() {
 
   const dispatch = useDispatch();
 
-  const { productLoading } = useSelector((state) => state.product);
+  const { productLoading, productSuccess } = useSelector(
+    (state) => state.product
+  );
   const { image, title, author, medium, format, price, description } =
     newProductData;
 
@@ -111,6 +113,30 @@ function ProductForm() {
 
     dispatch(createProduct(newProductObject));
   };
+
+  const resetForm = () => {
+    setOpen(false);
+    setValidated(false);
+    setLength('');
+    setWidth('');
+    setHeigth('');
+    setSelectedImage('');
+    setNewProductData({
+      image: '',
+      title: '',
+      author: '',
+      medium: '',
+      format: [],
+      price: '',
+      description: '',
+    });
+  };
+
+  useEffect(() => {
+    if (productSuccess) {
+      resetForm();
+    }
+  }, [productSuccess]);
 
   return (
     <Row className="justify-content-center">
