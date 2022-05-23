@@ -43,6 +43,22 @@ export const getIndexProducts = createAsyncThunk(
   }
 );
 
+export const updateProduct = createAsyncThunk(
+  'product/update',
+  async (productData, thunkAPI) => {
+    try {
+      return await productService.updateProduct(productData);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 const productSlice = createSlice({
   name: 'product',
   initialState,
@@ -82,6 +98,32 @@ const productSlice = createSlice({
         state.products = action.payload;
       })
       .addCase(getIndexProducts.rejected, (state, action) => {
+        state.productLoading = false;
+        state.productSuccess = false;
+        state.productError = true;
+        state.productMessage = action.payload;
+      })
+      .addCase(updateProduct.pending, (state) => {
+        state.productLoading = true;
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        state.productLoading = false;
+        state.productError = false;
+        state.productSuccess = true;
+        state.productMessage = `You have successfully updated "${action.payload.title}"`;
+        console.log(action.payload);
+        const updatedProdId = action.payload._id;
+        const newStateProducts = state.products.map((product) => {
+          if (product._id === updatedProdId) {
+            return action.payload;
+          } else {
+            return product;
+          }
+        });
+
+        state.products = newStateProducts;
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
         state.productLoading = false;
         state.productSuccess = false;
         state.productError = true;

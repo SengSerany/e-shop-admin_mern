@@ -21,9 +21,24 @@ const getAllProducts = async () => {
   }
 };
 
+// Create product
+const updateProduct = async (productData) => {
+  try {
+    const response = await axios.patch(
+      `${API_URL}/${productData._id}/edit`,
+      productData
+    );
+
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const productService = {
   createProduct,
   getAllProducts,
+  updateProduct,
 };
 
 export default productService;

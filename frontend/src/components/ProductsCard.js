@@ -19,9 +19,8 @@ function ProductsCard({ product }) {
 
   return (
     <Col md="auto">
-      <Link to="/">
+      <Link to={`/product/${product._id}`}>
         <Card
-          key={product.id}
           className="index-product-image rounded-3"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -40,7 +39,7 @@ function ProductsCard({ product }) {
                 <br />
                 {`Format : ${product.format[0]} x ${product.format[1]} x ${product.format[2]} mm`}
                 <br />
-                {`Price : ${priceWithSpaces(product.price)}$`}
+                {`Price : ${priceWithSpaces(product.price)}€`}
                 <br />
                 Description: ...
               </Card.Text>

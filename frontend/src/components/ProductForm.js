@@ -1,27 +1,40 @@
 import { useState, useEffect } from 'react';
 import { Button, Row, Col, Collapse, Form, Spinner } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProduct } from '../features/product/productSlice';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { createProduct, updateProduct } from '../features/product/productSlice';
 import { toast } from 'react-toastify';
 
-function ProductForm() {
-  const [open, setOpen] = useState(false);
+function ProductForm({
+  initImage = '',
+  initTitle = '',
+  initAuthor = '',
+  initMedium = '',
+  initPrice = '',
+  initFormat = ['', '', ''],
+  initDescription = '',
+}) {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const params = useParams();
+  const currentPage = location.pathname;
+
+  const [open, setOpen] = useState(currentPage.endsWith('edit') ? true : false);
   const [validated, setValidated] = useState(false);
-  const [length, setLength] = useState('');
-  const [width, setWidth] = useState('');
-  const [height, setHeigth] = useState('');
-  const [selectedImage, setSelectedImage] = useState('');
+  const [length, setLength] = useState(initFormat[0]);
+  const [width, setWidth] = useState(initFormat[1]);
+  const [height, setHeigth] = useState(initFormat[2]);
+  const [selectedImage, setSelectedImage] = useState(initImage);
   const [newProductData, setNewProductData] = useState({
     image: '',
-    title: '',
-    author: '',
-    medium: '',
-    format: [],
-    price: '',
-    description: '',
+    title: initTitle,
+    author: initAuthor,
+    medium: initMedium,
+    format: initFormat,
+    price: initPrice,
+    description: initDescription,
   });
-
-  const dispatch = useDispatch();
 
   const { productLoading, productSuccess } = useSelector(
     (state) => state.product
@@ -102,7 +115,10 @@ function ProductForm() {
       return;
     }
     const newProductObject = {
-      image: selectedImage,
+      image:
+        currentPage.endsWith('edit') && image === ''
+          ? initImage
+          : selectedImage,
       title,
       author,
       medium,
@@ -111,7 +127,11 @@ function ProductForm() {
       description,
     };
 
-    dispatch(createProduct(newProductObject));
+    if (currentPage.endsWith('edit')) {
+      dispatch(updateProduct({ ...newProductObject, _id: params.id }));
+    } else {
+      dispatch(createProduct(newProductObject));
+    }
   };
 
   const resetForm = () => {
@@ -133,27 +153,32 @@ function ProductForm() {
   };
 
   useEffect(() => {
-    if (productSuccess) {
+    if (productSuccess && currentPage.endsWith('edit')) {
+      navigate(`/product/${params.id}`);
+    } else if (productSuccess) {
       resetForm();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productSuccess]);
 
   return (
     <Row className="justify-content-center">
       <Col md="8">
-        <Row className="justify-content-center">
-          <Col md="auto">
-            <Button
-              onClick={() => setOpen(!open)}
-              aria-controls="collapse-new-product"
-              aria-expanded={open}
-              variant="outline-dark"
-              size="sm"
-            >
-              Add a new art piece
-            </Button>
-          </Col>
-        </Row>
+        {!currentPage.endsWith('edit') && (
+          <Row className="justify-content-center">
+            <Col md="auto">
+              <Button
+                onClick={() => setOpen(!open)}
+                aria-controls="collapse-new-product"
+                aria-expanded={open}
+                variant="outline-dark"
+                size="sm"
+              >
+                Add a new art piece
+              </Button>
+            </Col>
+          </Row>
+        )}
         <br />
         <Collapse in={open}>
           <div id="collapse-new-product">
@@ -171,13 +196,22 @@ function ProductForm() {
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
               <Form.Group className="mb-3" controlId="image">
                 <Form.Label>Image</Form.Label>
-                <Form.Control
-                  required
-                  name="image"
-                  type="file"
-                  value={image}
-                  onChange={handleChange}
-                />
+                {currentPage.endsWith('edit') ? (
+                  <Form.Control
+                    name="image"
+                    type="file"
+                    value={image}
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <Form.Control
+                    required
+                    name="image"
+                    type="file"
+                    value={image}
+                    onChange={handleChange}
+                  />
+                )}
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="title">

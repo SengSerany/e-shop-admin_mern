@@ -94,16 +94,43 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error('All field must be completed');
   }
 
-  const updatedProduct = await Product.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
+  let uploadResponse;
+  if (!image.startsWith('http')) {
+    uploadResponse = await cloudinary.uploader.upload(image, {
+      upload_preset: 'art_gallery_api_pieces',
+    });
+  }
 
-  res.status(200).json({
-    endpoint: 'Update product',
-    product: updatedProduct,
-  });
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        image: uploadResponse ? uploadResponse.url : image,
+        title,
+        author,
+        medium,
+        format,
+        description,
+        price,
+      },
+      { new: true }
+    );
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      let errValidation = [];
+
+      Object.keys(error.errors).forEach((key) => {
+        errValidation.push(error.errors[key].message);
+      });
+
+      res.status(400);
+      throw new Error(errValidation);
+    }
+    res.status(400);
+    throw new Error('Something went wrong');
+  }
 });
 
 // DELETE - Delete product

@@ -13,6 +13,14 @@ body {
   padding-bottom: 2rem;
 }
 
+.text-on-right {
+  text-align: end;
+}
+
+.space-right {
+  margin-right: 0.5rem;
+}
+
 .nav-item a {
   color: #000000;
   text-decoration: none;
@@ -37,6 +45,17 @@ header {
   font-size: 8rem !important;
   font-family: 'Koulen', cursive;
   margin: 0.5rem 0 0 0;
+}
+
+.h1-show-product {
+  font-size: 4rem !important;
+  font-family: 'Koulen', cursive;
+  margin: 0.5rem 0 0 0;
+}
+
+.h1-em-author {
+  font-size: 1.5rem;
+  font-family: 'Koulen', cursive;
 }
 
 .lead.form-login {
@@ -120,6 +139,10 @@ header {
 .btn-logout {
   border: none;
   background-color: #ffffff;
+}
+
+.img-show-product {
+  height: 25rem;
 }
 
 @media (max-width: 992px) {
