@@ -1,5 +1,6 @@
 const express = require('express');
 const productRouter = express.Router();
+const { authHandler } = require('../middleware/authMiddleware');
 const {
   indexProducts,
   showProduct,
@@ -8,10 +9,10 @@ const {
   deleteProduct,
 } = require('../controllers/productController');
 
-productRouter.get('/', indexProducts);
-productRouter.get('/:id', showProduct);
-productRouter.post('/new', createProduct);
-productRouter.patch('/:id/edit', updateProduct);
-productRouter.delete('/:id/delete', deleteProduct);
+productRouter.get('/', authHandler, indexProducts);
+productRouter.get('/:id', authHandler, showProduct);
+productRouter.post('/new', authHandler, createProduct);
+productRouter.patch('/:id/edit', authHandler, updateProduct);
+productRouter.delete('/:id/delete', authHandler, deleteProduct);
 
 module.exports = productRouter;

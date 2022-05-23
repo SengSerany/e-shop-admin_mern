@@ -8,6 +8,7 @@ const productSchema = mongoose.Schema(
   {
     image: {
       type: String,
+      Trim: true,
       required: [true, 'You must add an image'],
     },
     title: {
@@ -23,10 +24,10 @@ const productSchema = mongoose.Schema(
       required: [true, 'You must add a medium'],
     },
     format: {
-      type: [Number],
+      type: [String],
       validate: [
         checkFormatArray,
-        'Format must be composed of 3 numbers ( height, width, depth)',
+        'Format must be composed of the 3 completed fields ( height, width, depth)',
       ],
       required: [true, 'You must add the format'],
     },

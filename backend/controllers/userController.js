@@ -44,7 +44,11 @@ const createUserAdminAccount = asyncHandler(async (req, res) => {
 
 // POST - Create user session
 const createUserAdminSession = asyncHandler(async (req, res) => {
-  res.status(200).json({ endpoint: 'Login user', user: req.user });
+  res
+    .status(200)
+    .cookie('userid', req.user.id, { maxAge: 2592000000 })
+    .cookie('username', req.user.username, { maxAge: 2592000000 })
+    .json({ endpoint: 'Login user', user: req.user });
 });
 
 // GET - Show user account
@@ -56,8 +60,11 @@ const showUserAdminAccount = asyncHandler(async (req, res) => {
 const deleteSessionUserAdmin = asyncHandler(async (req, res) => {
   req.logout();
   req.session.destroy();
+
   res
     .clearCookie('connect.sid')
+    .clearCookie('userid')
+    .clearCookie('username')
     .status(200)
     .json({ endpoint: 'Delete session user', user: req.user.username });
 });

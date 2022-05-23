@@ -1,8 +1,22 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import authService from './authService';
 
+const getCookie = (cookieName) => {
+  let cookie = {};
+  document.cookie.split(';').forEach((el) => {
+    let [key, value] = el.split('=');
+    cookie[key.trim()] = value;
+  });
+  return cookie[cookieName];
+};
+
+const userFromCookie = {
+  id: getCookie('userid'),
+  username: getCookie('username').replace(/%20/g, ' '),
+};
+
 const initialState = {
-  user: { id: null, username: null, email: null },
+  user: userFromCookie ? userFromCookie : { id: null, username: null },
   isError: false,
   isSuccess: false,
   isLoading: false,
@@ -97,6 +111,7 @@ export const authSlice = createSlice({
       .addCase(register.fulfilled, (state) => {
         state.isLoading = false;
         state.isSuccess = true;
+        state.message = 'You have been registered, you can now log in';
       })
       .addCase(register.rejected, (state, action) => {
         state.isLoading = false;
@@ -114,6 +129,7 @@ export const authSlice = createSlice({
           username: action.payload.user.username,
           email: action.payload.user.email,
         };
+        state.message = `You are connected ${action.payload.user.username}`;
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
@@ -129,8 +145,9 @@ export const authSlice = createSlice({
       })
       .addCase(handleSession.rejected, (state) => {})
       .addCase(logout.fulfilled, (state) => {
-        state.user = { id: null, username: null, email: null };
+        state.user = { id: null, username: null };
         state.isUnlogged = true;
+        state.message = 'You are log out !';
       });
   },
 });

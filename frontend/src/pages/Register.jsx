@@ -52,7 +52,7 @@ function Register() {
     <div className="user-form-register text-center">
       <Row>
         <Col lg={4}>
-          <h1 className="h1-form-register">Register</h1>
+          <h1 className="h1">Register</h1>
           <p className="lead form-login">
             Create your account and get some fabulous pieces of art !
           </p>

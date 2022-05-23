@@ -1,13 +1,11 @@
 const asyncHandler = require('express-async-handler');
 const Product = require('../models/productModel');
+const { cloudinary } = require('../config/cloudinary');
 
 // GET - Index products
 const indexProducts = asyncHandler(async (req, res) => {
   const products = await Product.find();
-  res.status(200).json({
-    endpoint: 'Index product',
-    products: products,
-  });
+  res.status(200).json(products);
 });
 
 // GET - Show product
@@ -28,6 +26,7 @@ const showProduct = asyncHandler(async (req, res) => {
 // POST - Create product
 const createProduct = asyncHandler(async (req, res) => {
   const { image, title, author, medium, format, description, price } = req.body;
+
   if (
     !image ||
     !title ||
@@ -41,20 +40,36 @@ const createProduct = asyncHandler(async (req, res) => {
     throw new Error('All field must be completed');
   }
 
-  const product = await Product.create({
-    image,
-    title,
-    author,
-    medium,
-    format,
-    description,
-    price,
+  const uploadResponse = await cloudinary.uploader.upload(image, {
+    upload_preset: 'art_gallery_api_pieces',
   });
 
-  res.status(200).json({
-    endpoint: 'Create product',
-    product: product,
-  });
+  try {
+    const product = await Product.create({
+      image: uploadResponse.url,
+      title,
+      author,
+      medium,
+      format,
+      description,
+      price,
+    });
+
+    res.status(200).json(product);
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      let errValidation = [];
+
+      Object.keys(error.errors).forEach((key) => {
+        errValidation.push(error.errors[key].message);
+      });
+
+      res.status(400);
+      throw new Error(errValidation);
+    }
+    res.status(400);
+    throw new Error('Something went wrong');
+  }
 });
 
 // PATCH - Update product
@@ -80,16 +95,43 @@ const updateProduct = asyncHandler(async (req, res) => {
     throw new Error('All field must be completed');
   }
 
-  const updatedProduct = await Product.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    { new: true }
-  );
+  let uploadResponse;
+  if (!image.startsWith('http')) {
+    uploadResponse = await cloudinary.uploader.upload(image, {
+      upload_preset: 'art_gallery_api_pieces',
+    });
+  }
 
-  res.status(200).json({
-    endpoint: 'Update product',
-    product: updatedProduct,
-  });
+  try {
+    const updatedProduct = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        image: uploadResponse ? uploadResponse.url : image,
+        title,
+        author,
+        medium,
+        format,
+        description,
+        price,
+      },
+      { new: true }
+    );
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      let errValidation = [];
+
+      Object.keys(error.errors).forEach((key) => {
+        errValidation.push(error.errors[key].message);
+      });
+
+      res.status(400);
+      throw new Error(errValidation);
+    }
+    res.status(400);
+    throw new Error('Something went wrong');
+  }
 });
 
 // DELETE - Delete product
@@ -104,11 +146,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
   await product.remove();
 
   res.status(200).json({
-    endpoint: 'Delete product',
-    product: {
-      _id: product._id,
-      title: product.title,
-    },
+    _id: product._id,
+    title: product.title,
   });
 });
 

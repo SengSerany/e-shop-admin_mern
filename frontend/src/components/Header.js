@@ -8,6 +8,10 @@ import {
   logout,
   resetAuthState,
 } from '../features/auth/authSlice';
+import {
+  getIndexProducts,
+  resetProductState,
+} from '../features/product/productSlice';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -18,6 +22,9 @@ function Header() {
   const { user, isUnlogged, isError, isSuccess, message } = useSelector(
     (state) => state.auth
   );
+  const { productError, productSuccess, productMessage } = useSelector(
+    (state) => state.product
+  );
 
   const handleLogout = () => {
     dispatch(logout());
@@ -25,28 +32,39 @@ function Header() {
   };
 
   useEffect(() => {
-    dispatch(handleSession('profile'));
+    if (user.id === null) {
+      dispatch(handleSession('profile'));
+    }
+
     if (isUnlogged) {
       navigate('/');
-      toast.success('Your are logout !');
+      toast.success(message);
     }
 
-    if (isError) {
-      toast.error(message);
+    if (isError || productError) {
+      if (message !== '') {
+        toast.error(message);
+      } else if (productMessage !== '') {
+        toast.error(productMessage);
+      }
     }
 
-    if (isSuccess && location.pathname === '/login') {
-      navigate('/');
-      toast.success('Welcome ! You are now logged !');
+    if (isSuccess || productSuccess) {
+      if (location.pathname === '/login') {
+        navigate('/');
+      } else if (location.pathname === '/register') {
+        navigate('/login');
+      }
+
+      if (message !== '') {
+        toast.success(message);
+      } else if (productMessage !== '') {
+        toast.success(productMessage);
+      }
     }
 
     if (user.id !== null && location.pathname === '/login') {
       navigate('/');
-    }
-
-    if (isSuccess && location.pathname === '/register') {
-      navigate('/login');
-      toast.success('Welcome ! You are subscribe ! You can now login !');
     }
 
     if (user.id !== null && location.pathname === '/register') {
@@ -58,7 +76,12 @@ function Header() {
       toast.error('You must be logged');
     }
 
-    dispatch(resetAuthState());
+    if (isError || isSuccess || isUnlogged) {
+      dispatch(resetAuthState());
+    }
+    if (productError || productSuccess) {
+      dispatch(resetProductState());
+    }
   }, [
     dispatch,
     isError,
@@ -67,8 +90,16 @@ function Header() {
     location.pathname,
     message,
     navigate,
+    productError,
+    productMessage,
+    productSuccess,
     user.id,
   ]);
+
+  useEffect(() => {
+    dispatch(getIndexProducts());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <header>
@@ -136,6 +167,7 @@ function Header() {
             </>
           )}
         </Nav>
+        <br />
       </Container>
     </header>
   );
