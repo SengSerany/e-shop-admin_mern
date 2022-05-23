@@ -1,9 +1,12 @@
-import { useSelector } from 'react-redux';
-import { useParams, Link } from 'react-router-dom';
+import { deleteProduct } from '../features/product/productSlice';
+import { useSelector, useDispatch } from 'react-redux';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Row, Col, Button } from 'react-bootstrap';
 import { FaArrowLeft } from 'react-icons/fa';
 
 function ProductShow() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const params = useParams();
   const { products } = useSelector((state) => state.product);
 
@@ -12,6 +15,7 @@ function ProductShow() {
   function priceWithSpaces(number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   }
+
   return (
     <div>
       <Row className="justify-content-center">
@@ -54,7 +58,13 @@ function ProductShow() {
                   Edit
                 </Button>
               </Link>
-              <Button variant="outline-danger" size="sm">
+              <Button
+                variant="outline-danger"
+                size="sm"
+                onClick={() =>
+                  dispatch(deleteProduct(params.id), navigate('/store'))
+                }
+              >
                 Delete
               </Button>
             </Col>

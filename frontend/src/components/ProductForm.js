@@ -102,6 +102,21 @@ function ProductForm({
   };
 
   const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!selectedImage) {
+      toast.error('You must add an image');
+      return;
+    }
+
+    if (
+      !selectedImage.startsWith('data:image/jpeg') ||
+      !selectedImage.startsWith('data:image/png')
+    ) {
+      toast.error('You must add an image in format jpeg or png');
+      return;
+    }
+
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.preventDefault();
@@ -109,11 +124,6 @@ function ProductForm({
     }
     setValidated(true);
 
-    e.preventDefault();
-    if (!selectedImage) {
-      toast.error('You must add an image');
-      return;
-    }
     const newProductObject = {
       image:
         currentPage.endsWith('edit') && image === ''
@@ -161,9 +171,14 @@ function ProductForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productSuccess]);
 
+  const log = () => {
+    console.log(newProductData.image);
+  };
+
   return (
     <Row className="justify-content-center">
       <Col md="8">
+        <Button onClick={log}>info</Button>
         {!currentPage.endsWith('edit') && (
           <Row className="justify-content-center">
             <Col md="auto">
@@ -212,6 +227,9 @@ function ProductForm({
                     onChange={handleChange}
                   />
                 )}
+                <Form.Text className="text-muted">
+                  The image must be in jpeg or png.
+                </Form.Text>
               </Form.Group>
 
               <Form.Group className="mb-3" controlId="title">

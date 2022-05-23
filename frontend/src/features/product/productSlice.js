@@ -59,6 +59,24 @@ export const updateProduct = createAsyncThunk(
     }
   }
 );
+
+export const deleteProduct = createAsyncThunk(
+  'product/delete',
+  async (productID, thunkAPI) => {
+    try {
+      return await productService.deleteProduct(productID);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: 'product',
   initialState,
@@ -128,6 +146,15 @@ const productSlice = createSlice({
         state.productSuccess = false;
         state.productError = true;
         state.productMessage = action.payload;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.productLoading = false;
+        state.productError = false;
+        state.productSuccess = true;
+        state.productMessage = `You have successfully deleted "${action.payload.title}"`;
+        state.products = state.products.filter(
+          (product) => product._id !== action.payload._id
+        );
       });
   },
 });

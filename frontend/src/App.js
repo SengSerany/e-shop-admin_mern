@@ -24,13 +24,13 @@ function App() {
           <Header />
           <Container>
             <Routes>
-              <Route exact path="/" element={<Homepage />} />
+              <Route path="/product/:id/edit" element={<ProductEdit />} />
+              <Route path="/product/:id" element={<ProductShow />} />
               <Route exact path="/register" element={<Register />} />
               <Route exact path="/login" element={<Login />} />
               <Route exact path="/profile" element={<Profile />} />
               <Route exact path="/store" element={<Store />} />
-              <Route path="/product/:id" element={<ProductShow />} />
-              <Route path="/product/:id/edit" element={<ProductEdit />} />
+              <Route exact path="/" element={<Homepage />} />
             </Routes>
           </Container>
         </div>

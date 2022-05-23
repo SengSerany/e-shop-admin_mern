@@ -26,6 +26,15 @@ const showProduct = asyncHandler(async (req, res) => {
 // POST - Create product
 const createProduct = asyncHandler(async (req, res) => {
   const { image, title, author, medium, format, description, price } = req.body;
+
+  if (
+    !image.startsWith('data:image/jpeg') ||
+    !image.startsWith('data:image/png')
+  ) {
+    res.status(400);
+    throw new Error('Image must be in png or jpeg');
+  }
+
   if (
     !image ||
     !title ||
@@ -145,11 +154,8 @@ const deleteProduct = asyncHandler(async (req, res) => {
   await product.remove();
 
   res.status(200).json({
-    endpoint: 'Delete product',
-    product: {
-      _id: product._id,
-      title: product.title,
-    },
+    _id: product._id,
+    title: product.title,
   });
 });
 

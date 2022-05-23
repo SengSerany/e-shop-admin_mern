@@ -21,24 +21,28 @@ const getAllProducts = async () => {
   }
 };
 
-// Create product
+// Update product
 const updateProduct = async (productData) => {
-  try {
-    const response = await axios.patch(
-      `${API_URL}/${productData._id}/edit`,
-      productData
-    );
+  const response = await axios.patch(
+    `${API_URL}/${productData._id}/edit`,
+    productData
+  );
 
-    return response.data;
-  } catch (error) {
-    console.log(error);
-  }
+  return response.data;
+};
+
+// Delete product
+const deleteProduct = async (productID) => {
+  const response = await axios.delete(`${API_URL}/${productID}/delete`);
+
+  return response.data;
 };
 
 const productService = {
   createProduct,
   getAllProducts,
   updateProduct,
+  deleteProduct,
 };
 
 export default productService;

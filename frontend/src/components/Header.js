@@ -8,10 +8,7 @@ import {
   logout,
   resetAuthState,
 } from '../features/auth/authSlice';
-import {
-  getIndexProducts,
-  resetProductState,
-} from '../features/product/productSlice';
+import { resetProductState } from '../features/product/productSlice';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -95,11 +92,6 @@ function Header() {
     productSuccess,
     user.id,
   ]);
-
-  useEffect(() => {
-    dispatch(getIndexProducts());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <header>

@@ -1,10 +1,35 @@
 import ProductForm from '../components/ProductForm';
 import ProductsCard from '../components/ProductsCard';
-import { Row } from 'react-bootstrap';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { getIndexProducts } from '../features/product/productSlice';
+import { Row, Col, Spinner } from 'react-bootstrap';
 import { useSelector } from 'react-redux';
 
 function Store() {
-  const { products } = useSelector((state) => state.product);
+  const dispatch = useDispatch();
+  const { products, productLoading } = useSelector((state) => state.product);
+
+  useEffect(() => {
+    dispatch(getIndexProducts());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (productLoading) {
+    return (
+      <Row className="justify-content-center">
+        <Col md="auto">
+          <Spinner
+            as="span"
+            animation="border"
+            size="sm"
+            role="status"
+            aria-hidden="true"
+          />
+        </Col>
+      </Row>
+    );
+  }
 
   return (
     <>
