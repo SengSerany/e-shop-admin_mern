@@ -28,14 +28,6 @@ const createProduct = asyncHandler(async (req, res) => {
   const { image, title, author, medium, format, description, price } = req.body;
 
   if (
-    !image.startsWith('data:image/jpeg') ||
-    !image.startsWith('data:image/png')
-  ) {
-    res.status(400);
-    throw new Error('Image must be in png or jpeg');
-  }
-
-  if (
     !image ||
     !title ||
     !author ||

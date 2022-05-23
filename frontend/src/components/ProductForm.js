@@ -171,14 +171,9 @@ function ProductForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productSuccess]);
 
-  const log = () => {
-    console.log(newProductData.image);
-  };
-
   return (
     <Row className="justify-content-center">
       <Col md="8">
-        <Button onClick={log}>info</Button>
         {!currentPage.endsWith('edit') && (
           <Row className="justify-content-center">
             <Col md="auto">
