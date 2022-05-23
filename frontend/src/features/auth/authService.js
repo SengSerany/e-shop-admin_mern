@@ -9,19 +9,20 @@ const register = async (userData) => {
   return response.data;
 };
 
+// Login
 const login = async (userData) => {
   const response = await axios.post(`${API_URL}/login`, userData);
-
   return response.data;
 };
 
+// Handle session
 const handleSession = async (endpoint) => {
   const response = await fetch(`${API_URL}/${endpoint}`);
   const data = await response.json();
   if (data.user) {
     return data.user;
   } else {
-    return { _id: null, username: null, email: null };
+    return { _id: null, username: null };
   }
 };
 

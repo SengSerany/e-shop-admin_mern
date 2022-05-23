@@ -102,7 +102,13 @@ function ProductForm({
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    setValidated(true);
 
     if (!selectedImage) {
       toast.error('You must add an image');
@@ -110,19 +116,14 @@ function ProductForm({
     }
 
     if (
-      !selectedImage.startsWith('data:image/jpeg') ||
+      !selectedImage.startsWith('data:image/jpeg') &&
       !selectedImage.startsWith('data:image/png')
     ) {
-      toast.error('You must add an image in format jpeg or png');
-      return;
+      if (!currentPage.endsWith('edit') && !image === '') {
+        toast.error('You must add an image in format jpeg or png');
+        return;
+      }
     }
-
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    setValidated(true);
 
     const newProductObject = {
       image:

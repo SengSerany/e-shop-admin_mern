@@ -125,11 +125,6 @@ const productSlice = createSlice({
         state.productLoading = true;
       })
       .addCase(updateProduct.fulfilled, (state, action) => {
-        state.productLoading = false;
-        state.productError = false;
-        state.productSuccess = true;
-        state.productMessage = `You have successfully updated "${action.payload.title}"`;
-        console.log(action.payload);
         const updatedProdId = action.payload._id;
         const newStateProducts = state.products.map((product) => {
           if (product._id === updatedProdId) {
@@ -138,6 +133,10 @@ const productSlice = createSlice({
             return product;
           }
         });
+        state.productLoading = false;
+        state.productError = false;
+        state.productSuccess = true;
+        state.productMessage = `You have successfully updated "${action.payload.title}"`;
 
         state.products = newStateProducts;
       })

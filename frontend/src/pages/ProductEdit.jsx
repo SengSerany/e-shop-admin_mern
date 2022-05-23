@@ -1,15 +1,26 @@
 import { useParams, Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProductForm from '../components/ProductForm';
-import { Button } from 'react-bootstrap';
+import { Button, Spinner } from 'react-bootstrap';
 import { FaArrowLeft } from 'react-icons/fa';
 
 function ProductEdit() {
   const params = useParams();
-  const { products } = useSelector((state) => state.product);
-
+  const { products, productLoading } = useSelector((state) => state.product);
   const { image, title, author, medium, price, format, description } =
     products.find((product) => product._id === params.id);
+
+  if (productLoading) {
+    return (
+      <Spinner
+        as="span"
+        animation="border"
+        size="sm"
+        role="status"
+        aria-hidden="true"
+      />
+    );
+  }
 
   return (
     <>
